@@ -1,54 +1,48 @@
+import { useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import logo from '../images/download.jpeg';
 
-import { AppBar, Box, InputBase, styled, Toolbar } from '@mui/material'
-import logo from '../images/download.jpeg'
-import SearchIcon from '@mui/icons-material/Search';
+const Header = ({ setText }) => {
+    const [isdarkmode, isSetdarkmode] = useState(false);
 
-const Appbarccss = styled(AppBar)`
-   background: #000;
-   padding : 10px;
-   height: 90px
-`
+    const location = useLocation();
+    const isCharcterdetailpage = location.pathname.startsWith('/character/');
 
-const BoxCss = styled(Box)`
-     background-color: rgb(255,255,255,0.15);
-     margin-left:25px;
-     border-radius:5px
-     position: relative
-`
+    const togglemode = () => {
+        isSetdarkmode(!isdarkmode);
+        if (!isdarkmode) {
+            document.body.style.backgroundColor = 'black';
+        } else {
+            document.body.style.backgroundColor = 'white';
+        }
+    };
 
-const InputBaseCss = styled(InputBase)`
-      color: inherit;
-      margin: 0 70px;
-`
+    const getText = (e) => {
+        setText(e.target.value);
+    };
 
-const SearchIconcss = styled(SearchIcon)`
-     position: absolute;
-     margin-top: 5px;
-     margin-left: 5px;
-
-`
-
-const Header = ({setText}) => {
-
-
-    const getText = (e)=>{
-      setText(e.target.value);
+    if (isCharcterdetailpage) {
+        return null;
     }
 
     return (
-        <Appbarccss position='static'>
-            <Toolbar>
-                <img src={logo} alt="logo" style={{ width: 70 }} />
-                <BoxCss>
-                    <SearchIconcss />
-                    <InputBaseCss
+        <div className="navbar">
+            <div className="navbar-container">
+                <img src={logo} alt="logo" className="logo" />
+                <div className="search-container">
+                    <input
+                        type="text"
+                        className="search-input"
                         placeholder="Search By Name"
-                        onChange={(e) => getText(e)} />
-                </BoxCss>   
-            </Toolbar>
-        </Appbarccss>
-    )
-}
+                        onChange={getText}
+                    />
+                </div>
+                <button className="toggle-btn" onClick={togglemode}>
+                    {isdarkmode ? 'Light' : 'Dark'}
+                </button>
+            </div>
+        </div>
+    );
+};
 
-
-export default Header
+export default Header;

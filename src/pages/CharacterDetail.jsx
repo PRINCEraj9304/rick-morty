@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const CharacterDetail = () => {
 
@@ -8,6 +9,7 @@ const CharacterDetail = () => {
     const [character, setCharacter] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
 
@@ -29,14 +31,17 @@ const CharacterDetail = () => {
 
     return (
         <div className="character-detail-container">
+            <div className='char-info'>
             <img className="character-detail-image" src={character.image} alt={character.name} />
-            <h1 style={{color :"#F2EFE7", fontSize: "34px"}}>{character.name}</h1>
-            <p style={{color :"#F2EFE7", fontSize: "20px"}} ><strong>Species :</strong> {character.species}</p>
-            <p style={{color :"#F2EFE7", fontSize: "20px"}} ><strong>Status :</strong> {character.status}</p>
-            <p style={{color :"#F2EFE7", fontSize: "20px"}} ><strong>Gender :</strong> {character.gender}</p>
-            <p style={{color :"#F2EFE7", fontSize: "20px"}}><strong>Origin :</strong> {character.origin.name}</p>
-            <p style={{color :"#F2EFE7", fontSize: "20px"}}><strong>Location :</strong> {character.location.name}</p>
-            <p style={{color :"#F2EFE7", fontSize: "20px"}}><strong>Total Episode Appearance :</strong> {character.episode.length}</p>
+            <h1 style={{color :"#F2EFE7", fontSize: "34px", margin: "30px"}}>{character.name}</h1>
+            <p style={{color :"#F2EFE7", fontSize: "20px", margin: "10px"}} ><strong>Species :</strong> {character.species}</p>
+            <p style={{color :"#F2EFE7", fontSize: "20px", margin: "10px"}} ><strong>Status :</strong> {character.status}</p>
+            <p style={{color :"#F2EFE7", fontSize: "20px", margin: "10px"}} ><strong>Gender :</strong> {character.gender}</p>
+            <p style={{color :"#F2EFE7", fontSize: "20px", margin: "10px"}}><strong>Origin :</strong> {character.origin.name}</p>
+            <p style={{color :"#F2EFE7", fontSize: "20px", margin: "10px"}}><strong>Location :</strong> {character.location.name}</p>
+            <p style={{color :"#F2EFE7", fontSize: "20px", margin : "10px"}}><strong>Total Episode Appearance :</strong> {character.episode.length}</p>
+             <button className='btn-back' onClick={()=>{navigate(`/`)}}>Back</button>
+        </div>
         </div>
     );
 };

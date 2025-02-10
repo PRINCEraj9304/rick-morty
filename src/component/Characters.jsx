@@ -1,5 +1,3 @@
-
-
 import { useEffect, useState } from "react";
 import { fetchData } from "../services/Api";
 import Character from "./Character";
@@ -7,14 +5,19 @@ import Character from "./Character";
 const Characters = ({ text }) => {
 
     const [characters, setCharacters] = useState([]);
-    const [currentpage, setCurrentpage] = useState(1);
-    const dataperpage = 8;
+    const [currentPage, setCurrentPage] = useState(1);
+    const dataPerPage = 8;
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         getAllCharacters();
     }, [text]);
 
     const getAllCharacters = async () => {
+        setLoading(true);  // Start loading
+        setError(null);    // Reset previous error
+
         let allCharacters = [];
         let totalPages = 1;
 
@@ -30,37 +33,66 @@ const Characters = ({ text }) => {
 
             // Loop through remaining pages
             for (let i = 2; i <= totalPages; i++) {
-                const response = await fetchData(text, i); // we are also passing the page number
+                const response = await fetchData(text, i); // Passing the page number
                 if (response && response.results) {
                     allCharacters = [...allCharacters, ...response.results];
                 }
             }
-            setCurrentpage(1);
+
+            setCurrentPage(1);  // Reset to first page after fetching
             setCharacters(allCharacters);
         } catch (error) {
             console.error("Error fetching data:", error);
             setCharacters([]);
+            setError('Failed to load data. Please try again later.');
+        } finally {
+            setLoading(false);  // End loading
         }
     };
 
-    const totalmanualpage = Math.ceil(characters.length / dataperpage);
+    if (loading) {
+        return <p>Loading...</p>
+    }
+    if (error) {
+        return <p className="error-message">{error}</p>;
+    }
 
-    const displayedcharcater = characters.slice((currentpage-1)*dataperpage , currentpage*dataperpage);
+    const totalPages = Math.ceil(characters.length / dataPerPage);
+    const displayedCharacters = characters.slice((currentPage - 1) * dataPerPage, currentPage * dataPerPage);
 
     return (
         <div className="characters-container">
-            {displayedcharcater.map((character) => (
+            {/* Loading indicator
+            {loading && <div className="loading">Loading...</div>} */}
+
+            {/* Error message */}
+            {/* {error && <div className="error">{error}</div>} */}
+
+            {/* Display characters */}
+            {!loading && !error && displayedCharacters.map((character) => (
                 <div key={character.id} className="character-item">
                     <Character character={character} />
                 </div>
             ))}
 
-            {/* apgination */}
-            <div className="pagination">
-                <button onClick={()=>setCurrentpage(currentpage-1)} disabled = {currentpage === 1}>Prev</button>
-                <span>Page {currentpage} of {totalmanualpage} </span>
-                <button onClick={()=>setCurrentpage(currentpage+1)} disabled = {currentpage === totalmanualpage}>Next</button>
-            </div>
+            {/* Pagination */}
+            {!loading && !error && (
+                <div className="pagination">
+                    <button
+                        onClick={() => setCurrentPage(currentPage - 1)}
+                        disabled={currentPage === 1 || loading}
+                    >
+                        Prev
+                    </button>
+                    <span>Page {currentPage} of {totalPages}</span>
+                    <button
+                        onClick={() => setCurrentPage(currentPage + 1)}
+                        disabled={currentPage === totalPages || loading}
+                    >
+                        Next
+                    </button>
+                </div>
+            )}
         </div>
     );
 };
