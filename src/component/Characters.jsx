@@ -1,98 +1,69 @@
 import { useEffect, useState } from "react";
 import { fetchData } from "../services/Api";
 import Character from "./Character";
+import Shimmer from "./Shimmer";
 
 const Characters = ({ text }) => {
 
     const [characters, setCharacters] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const dataPerPage = 8;
+    const [totalPages, setTotalPages] = useState(1);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        getAllCharacters();
-    }, [text]);
+        fetchCharacters(currentPage);
+    }, [text, currentPage]);
 
-    const getAllCharacters = async () => {
-        setLoading(true);  // Start loading
-        setError(null);    // Reset previous error
-
-        let allCharacters = [];
-        let totalPages = 1;
+    const fetchCharacters = async (page) => {
+        setLoading(true);
+        setError(null);
 
         try {
-            // First API call to get total pages
-            const firstResponse = await fetchData(text);
-            console.log("Full API Response:", firstResponse);
-
-            if (firstResponse && firstResponse.info) {
-                totalPages = firstResponse.info.pages; // Get total pages
-                allCharacters = firstResponse.results; // Store first page results
+            const response = await fetchData(text, page);
+            if (response && response.results) {
+                setCharacters(response.results);
+                setTotalPages(response.info.pages); // Set total pages dynamically
+            } else {
+                setCharacters([]);
             }
-
-            // Loop through remaining pages
-            for (let i = 2; i <= totalPages; i++) {
-                const response = await fetchData(text, i); // Passing the page number
-                if (response && response.results) {
-                    allCharacters = [...allCharacters, ...response.results];
-                }
-            }
-
-            setCurrentPage(1);  // Reset to first page after fetching
-            setCharacters(allCharacters);
         } catch (error) {
             console.error("Error fetching data:", error);
+            setError("Failed to load data. Please try again later.");
             setCharacters([]);
-            setError('Failed to load data. Please try again later.');
         } finally {
-            setLoading(false);  // End loading
+            setLoading(false);
         }
     };
 
-    if (loading) {
-        return <p>Loading...</p>
-    }
-    if (error) {
-        return <p className="error-message">{error}</p>;
-    }
-
-    const totalPages = Math.ceil(characters.length / dataPerPage);
-    const displayedCharacters = characters.slice((currentPage - 1) * dataPerPage, currentPage * dataPerPage);
+    if (loading) return <Shimmer/>;
+    if (error) return <p className="error-message">{error}</p>;
 
     return (
         <div className="characters-container">
-            {/* Loading indicator
-            {loading && <div className="loading">Loading...</div>} */}
-
-            {/* Error message */}
-            {/* {error && <div className="error">{error}</div>} */}
-
             {/* Display characters */}
-            {!loading && !error && displayedCharacters.map((character) => (
+            {characters.map((character) => (
                 <div key={character.id} className="character-item">
                     <Character character={character} />
                 </div>
             ))}
 
             {/* Pagination */}
-            {!loading && !error && (
-                <div className="pagination">
-                    <button
-                        onClick={() => setCurrentPage(currentPage - 1)}
-                        disabled={currentPage === 1 || loading}
-                    >
-                        Prev
-                    </button>
-                    <span>Page {currentPage} of {totalPages}</span>
-                    <button
-                        onClick={() => setCurrentPage(currentPage + 1)}
-                        disabled={currentPage === totalPages || loading}
-                    >
-                        Next
-                    </button>
-                </div>
-            )}
+            <div className="pagination">
+                <button
+                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                    disabled={currentPage === 1 || loading}
+                >
+                    Prev
+                </button>
+                <span>Page {currentPage} of {totalPages}</span>
+                <button
+                    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                    disabled={currentPage === totalPages || loading}
+                >
+                    Next
+                </button>
+            </div>
         </div>
     );
 };
