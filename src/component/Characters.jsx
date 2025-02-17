@@ -1,3 +1,5 @@
+/*
+
 import { useEffect, useState } from "react";
 import { fetchData } from "../services/Api";
 import Character from "./Character";
@@ -41,14 +43,14 @@ const Characters = ({ text }) => {
 
     return (
         <div className="characters-container">
-            {/* Display characters */}
+            
             {characters.map((character) => (
                 <div key={character.id} className="character-item">
                     <Character character={character} />
                 </div>
             ))}
 
-            {/* Pagination */}
+            
             <div className="pagination">
                 <button
                     onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
@@ -69,3 +71,50 @@ const Characters = ({ text }) => {
 };
 
 export default Characters;
+
+*/
+
+
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCharacters, setPage } from "../slices/characterSlice";
+import Character from "./Character";
+import Shimmer from "./Shimmer";
+
+const Characters = () => {
+    const dispatch = useDispatch();
+    const { list, currentPage, totalPages, loading, error } = useSelector((state) => state.characters);
+    const searchText = useSelector((state) => state.search.text);
+
+    useEffect(() => {
+        dispatch(fetchCharacters(searchText));
+    }, [dispatch, searchText, currentPage]);
+
+    if (loading) return <Shimmer />;
+    if (error) return <p className="error-message">{error}</p>;
+
+    return (
+        <div className="characters-container">
+            {list.map((character) => (
+                <div key={character.id} className="character-item">
+                    <Character character={character} />
+                </div>
+            ))}
+
+            <div className="pagination">
+                <button onClick={() => dispatch(setPage(Math.max(currentPage - 1, 1)))} disabled={currentPage === 1}>
+                    Prev
+                </button>
+                <span>Page {currentPage} of {totalPages}</span>
+                <button onClick={() => dispatch(setPage(Math.min(currentPage + 1, totalPages)))} disabled={currentPage === totalPages}>
+                    Next
+                </button>
+            </div>
+        </div>
+    );
+};
+
+export default Characters;
+
+
+

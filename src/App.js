@@ -1,4 +1,6 @@
 
+/*
+
 import './App.css';
 import Header from './component/Header';
 import Character from './component/Characters';
@@ -29,3 +31,34 @@ function App() {
 }
 
 export default App;
+
+*/
+
+
+
+import './App.css';
+import { Provider } from 'react-redux';
+import store from '../src/store/store';
+import Header from './component/Header';
+import Characters from './component/Characters';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import CharacterDetail from './pages/CharacterDetail';
+
+function App() {
+    return (
+        <Provider store={store}>
+            <Router>
+                <div className="App">
+                    <Header />
+                    <Routes>
+                        <Route path="/" element={<Characters />} />
+                        <Route path="/character/:id" element={<CharacterDetail />} />
+                    </Routes>
+                </div>
+            </Router>
+        </Provider>
+    );
+}
+
+export default App;
+
