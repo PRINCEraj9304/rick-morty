@@ -2,11 +2,10 @@
 
 const Shimmer = () =>{
 
-    console.log("shimmer effect is active");
     return(
-      <div className="shimmer-container">
+      <div className="shimmer-container" data-testid = "shimmer-container">
         {Array(20).fill("").map((_,index) =>(
-            <div key = {index} className="shimmer-card">
+            <div key = {index} className="shimmer-card" data-testid = "shimmer-card">
             </div>
         ))}
       </div>

@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Shimmerdetail from './Shimmerdetail';  // Import the shimmer effect
 
+
 const CharacterDetail = () => {
     const { id } = useParams();
     const [character, setCharacter] = useState(null);
@@ -30,7 +31,7 @@ const CharacterDetail = () => {
     if (error) return <p className="error-message">{error}</p>;
 
     return (
-        <div className="character-detail-container">
+        <div className="character-detail-container" data-testid="detail-container">
             <div className='char-info'>
                 <img className="character-detail-image" src={character.image} alt={character.name} />
                 <h1 style={{color: "#F2EFE7", fontSize: "34px", margin: "30px"}}>{character.name}</h1>

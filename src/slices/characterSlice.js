@@ -5,9 +5,10 @@ import { fetchData } from '../services/Api';
 // Async Thunk for fetching characters
 export const fetchCharacters = createAsyncThunk(
     'characters/fetchCharacters',
-    async (text, { getState }) => {
+    async (searchText, { getState }) => {
+        console.log("Inside fetchCharacters thunk, text:", searchText);
         const { currentPage } = getState().characters;
-        const response = await fetchData(text, currentPage);
+        const response = await fetchData(searchText, currentPage);
         return response;
     }
 );
@@ -37,8 +38,8 @@ const characterSlice = createSlice({
             })
             .addCase(fetchCharacters.fulfilled, (state, action) => {
                 state.loading = false;
-                state.list = action.payload.results || [];
-                state.totalPages = action.payload.info.pages || 1;
+                state.list = action.payload?.results || [];
+                state.totalPages = action.payload?.info?.pages || 1;
             })
             .addCase(fetchCharacters.rejected, (state) => {
                 state.loading = false;
