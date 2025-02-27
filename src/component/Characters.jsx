@@ -12,14 +12,18 @@ const Characters = () => {
     const searchText = useSelector((state) => state.search.text);
 
     useEffect(() => {
-        console.log("dispatching character woht text",searchText, "and page is", currentPage);
+        // console.log("dispatching character woht text",searchText, "and page is", currentPage);
         dispatch(fetchCharacters(searchText));
     }, [dispatch, searchText, currentPage]);
 
-    if (!list || list.length === 0) return <p>No characters found.</p>;
+    if (!list || list.length === 0) return <p>No Characters Found...</p>;
 
 
-    if (loading) return <Shimmer />;
+    if (loading) {
+        console.log("Shimmer should render now!");
+        return <Shimmer />;
+    }
+    
     if (error) return <p className="error-message">{error}</p>;
 
     return (

@@ -18,3 +18,4 @@ export function renderWithProviders(ui, extendedRenderOptions = {}) {
     ...render(ui, { wrapper: Wrapper, ...renderOptions }),
   };
 }
+

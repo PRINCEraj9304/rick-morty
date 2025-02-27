@@ -5,7 +5,7 @@ import searchReducer from '../slices/searchSlice';
 import themeSlice from '../slices/themeSlice';
 
 // Create the root reducer separately
-const rootReducer = combineReducers({
+export const rootReducer = combineReducers({
   characters: characterReducer,
   search: searchReducer,
   theme: themeSlice,
