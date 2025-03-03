@@ -1,22 +1,33 @@
-import { configureStore } from '@reduxjs/toolkit';
-import { combineReducers } from '@reduxjs/toolkit';
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import characterReducer from '../slices/characterSlice';
 import searchReducer from '../slices/searchSlice';
-import themeSlice from '../slices/themeSlice';
+import themeReducer from '../slices/themeSlice';
 
-// Create the root reducer separately
+// Combine reducers
 export const rootReducer = combineReducers({
   characters: characterReducer,
   search: searchReducer,
-  theme: themeSlice,
+  theme: themeReducer,
 });
 
-// Function to set up the store
+// Function to set up the store with default states if needed
 export const setupStore = (preloadedState = {}) => {
   return configureStore({
     reducer: rootReducer,
-    preloadedState, // Passing preloadedState for initial state
+    preloadedState: {
+      characters: preloadedState.characters || { 
+        list: [], 
+        loading: false, 
+        currentPage: 1, 
+        totalPages: 1, 
+        error: null 
+      },
+      search: preloadedState.search || { text: "" },
+      theme: preloadedState.theme || { darkMode: false },
+    },  
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
   });
 };
+
 
 export default setupStore;

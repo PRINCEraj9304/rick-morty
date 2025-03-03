@@ -8,17 +8,17 @@ import axios from "axios";
 const API_URL = "https://rickandmortyapi.com/api/character";
 
 export const fetchData = async (text, page) => {
-
-    console.log("fetcjing api with text", text, " and page is", page);
+    console.log("Fetching API with text:", text, " and page is", page);
     try {
-        const response = await fetch(`https://rickandmortyapi.com/api/character?page=${page}&name=${text}`);
-        const data = await response.json();
-        console.log("api data",data);
-        return data || { results: [], info: { pages: 1 } }; // ✅ Prevents `null`
+        const response = await axios.get(`https://rickandmortyapi.com/api/character?page=${page}&name=${text}`);
+        console.log("API data:", response.data);
+        return response.data || { results: [], info: { pages: 1 } };
     } catch (error) {
         console.error("API Fetch Error:", error);
         return { results: [], info: { pages: 1 } }; // ✅ Safe fallback
     }
 };
+
+
 
 

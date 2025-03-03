@@ -7,7 +7,6 @@
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^6.4.1",
     "@mui/material": "^6.4.1",
-    "@reduxjs/toolkit": "^2.5.1",
     "axios": "^1.7.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -43,11 +42,14 @@
     "@babel/core": "^7.26.9",
     "@babel/preset-env": "^7.26.9",
     "@babel/preset-react": "^7.26.3",
+    "@reduxjs/toolkit": "^2.6.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
     "babel-jest": "^29.7.0",
     "identity-obj-proxy": "^3.0.0",
+    "jest": "^27.5.1",
     "msw": "^2.7.2",
+    "redux-mock-store": "^1.5.5",
     "web-vitals": "^4.2.4"
   },
   "jest": {

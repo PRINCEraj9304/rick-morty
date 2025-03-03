@@ -34,4 +34,10 @@ describe("test the characterslice component", ()=>{
         expect(newstate.totalPages).toBe(3);
         expect(newstate.list).toEqual(payload.results);
     });
+
+    it("should handle the fetchcharacter.rejected", ()=>{
+        const newstate = characterReducer(initialState, {type: fetchCharacters.rejected.type});
+        expect(newstate.loading).toEqual(false);
+        expect(newstate.error).toBe("Failed to load data.");
+    });
 });

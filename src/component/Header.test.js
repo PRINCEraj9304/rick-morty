@@ -7,6 +7,7 @@ import { renderWithProviders } from '../utils/test-utils';
 import { MemoryRouter } from 'react-router-dom';
 
 describe('Header', () => {
+
     it('renders correctly', () => {
         renderWithProviders(
             <rrd.BrowserRouter>
@@ -54,4 +55,15 @@ it("does not render on character detail page", () => {
 
         expect(store.getState().search.text).toBe("Rick");
     });
+
+    it("toggle theme when button is clicked", ()=>{
+        const {store} = renderWithProviders(
+            <MemoryRouter><Header/></MemoryRouter>
+        )
+
+        const togglebutton = screen.getByRole("button");
+        fireEvent.click(togglebutton);
+
+        expect(store.getState().theme.isDarkmode).toBe(true);
+    })
 });

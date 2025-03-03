@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCharacters, setPage } from "../slices/characterSlice";
@@ -8,16 +7,14 @@ import Shimmer from "./Shimmer";
 const Characters = () => {
 
     const dispatch = useDispatch();
-    const { list, currentPage, totalPages, loading, error } = useSelector((state) => state.characters);
+    const { list = [], currentPage = 1, totalPages = 1, loading = false, error = null } =
+    useSelector((state) => state.characters) || {};
+
     const searchText = useSelector((state) => state.search.text);
 
     useEffect(() => {
-        // console.log("dispatching character woht text",searchText, "and page is", currentPage);
         dispatch(fetchCharacters(searchText));
     }, [dispatch, searchText, currentPage]);
-
-    if (!list || list.length === 0) return <p>No Characters Found...</p>;
-
 
     if (loading) {
         console.log("Shimmer should render now!");
@@ -25,11 +22,12 @@ const Characters = () => {
     }
     
     if (error) return <p className="error-message">{error}</p>;
+    if (!list || list.length === 0) return <p>No Characters Found...</p>;
 
     return (
         <div className="characters-container">
             {list.map((character) => (
-                <div key={character.id} className="character-item">
+                <div key={character.id} className="character-item" data-testid = "character-item">
                     <Character character={character} />
                 </div>
             ))}

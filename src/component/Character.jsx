@@ -1,8 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import Header from './Header';
+import { useSelector } from 'react-redux';
 
 const Character = ({ character = {} }) => {
     const navigate = useNavigate();
+    const charactersState = useSelector((state) => state.characters);
+    const { list = [] } = charactersState || {};
 
     return (
         <div

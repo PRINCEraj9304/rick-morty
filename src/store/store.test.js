@@ -1,6 +1,5 @@
-
 import setUpStore, { setupStore } from "./store";
-import { rootReducer } from '../store/store';
+import { rootReducer } from './store';
 import { toggleTheme } from "../slices/themeSlice";
 
 describe("we are testing the store", () => {
