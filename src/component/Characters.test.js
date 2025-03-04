@@ -5,6 +5,8 @@ import Characters from "./Characters";
 import * as characterSlice from "../slices/characterSlice";
 import { setPage } from "../slices/characterSlice";
 import { fireEvent } from "@testing-library/react";
+import configureStore from "redux-mock-store";
+import { Provider } from "react-redux";
 
 // jest.mock("../slices/characterSlice", () => ({
 //     ...jest.requireActual("../slices/characterSlice"),
@@ -39,6 +41,8 @@ describe("Characters Component", () => {
     });
 
     it("renders 'No Characters Found...' when list is empty", async () => {
+        jest.spyOn(characterSlice, 'fetchCharacters').mockImplementation(() => ({ type: 'TEST' }));
+        
         renderWithProviders(
             <MemoryRouter>
                 <Characters />
@@ -49,15 +53,16 @@ describe("Characters Component", () => {
                         list: [],
                         loading: false,
                         currentPage: 1,
-                        totalPages: 1,
+                        totalPages: 0,
                         error: null,
                     },
                 },
             }
         );
 
-        const noCharactersElement = await screen.findByText("No Characters Found...");
-        expect(noCharactersElement).toBeInTheDocument();
+        await waitFor(() => {
+            expect(screen.getByTestId("no-characters-message")).toBeInTheDocument();
+        });
     });
 
     it("renders error message when error exists", async () => {
@@ -281,5 +286,69 @@ describe("Characters Component", () => {
         fireEvent.click(nexbutton);
         expect(setPageSpy).toHaveBeenCalledWith(3);
     })
+
+});
+
+
+
+
+const mockStore = configureStore();
+
+describe("we are checking fallback value of character component", () => {
+    let store;
+
+    beforeEach(() => {
+        store = mockStore({
+            characters: {}, // Empty state to trigger fallbacks
+            search: { text: "" },
+        });
+    });
+
+    test("uses default values when state properties are missing", () => {
+        renderWithProviders(
+            <Provider store={store}>
+                <MemoryRouter>
+                    <Characters />
+                </MemoryRouter>
+            </Provider>
+        );
+
+        expect(screen.getByTestId("no-characters-message")).toBeInTheDocument();
+
+    });
+
+    test("renders fallback when list is missing", () => {
+        store = mockStore({
+            characters: { list: undefined }, // Simulating missing list
+            search: { text: "" },
+        });
+
+        renderWithProviders(
+            <Provider store={store}>
+                <MemoryRouter>
+                    <Characters />
+                </MemoryRouter>
+            </Provider>
+        );
+
+        expect(screen.getByTestId("no-characters-message")).toBeInTheDocument();
+    });
+
+    test("renders fallback when loading is missing (should not show Shimmer)", () => {
+        store = mockStore({
+            characters: {}, // No `loading` key, should default to false
+            search: { text: "" },
+        });
+
+        renderWithProviders(
+            <Provider store={store}>
+                <MemoryRouter>
+                    <Characters />
+                </MemoryRouter>
+            </Provider>
+        );
+
+        expect(screen.queryByText(/Shimmer should render now!/i)).not.toBeInTheDocument();
+    });
 
 });

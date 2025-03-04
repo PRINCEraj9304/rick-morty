@@ -85,5 +85,12 @@ describe("API Testing", () => {
         const response = await fetchData("InvalidCharacter", 1);
 
         expect(response).toEqual({ results: [], info: { pages: 1 } });
+    });
+
+    it("return fallback when respose.data is undefined", async()=>{
+        axios.get.mockResolvedValue({data : undefined});
+
+        const data = await fetchData("Morty", 2);
+        expect(data).toEqual({ results: [], info: { pages: 1 } });
     })
 });

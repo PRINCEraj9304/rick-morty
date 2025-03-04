@@ -22,7 +22,9 @@ const Characters = () => {
     }
     
     if (error) return <p className="error-message">{error}</p>;
-    if (!list || list.length === 0) return <p>No Characters Found...</p>;
+    if (!list || list.length === 0) return (
+        <p data-testid="no-characters-message">No Characters Found...</p>
+    );
 
     return (
         <div className="characters-container">

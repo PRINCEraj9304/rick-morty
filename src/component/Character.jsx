@@ -21,9 +21,9 @@ const Character = ({ character = {} }) => {
                 alt={character.name || "Unknown Character"}
             />
             <div className="character-info">
-                <p className="character-name">Name: {character.name || "Unknown"}</p>
+                <p className="character-name" data-testid = "character-name">Name: {character.name || "Unknown"}</p>
                 <p className="character-species">Species: {character.species || "Unknown"}</p>
-                <p className="character-status">
+                <p className="character-status" data-testid = "character-status">
                     Status:{" "}
                     <span className={character.status?.toLowerCase() || "unknown"}>
                         {character.status || "Unknown"}
